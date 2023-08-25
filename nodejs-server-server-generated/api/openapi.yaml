@@ -1,0 +1,405 @@
+openapi: 3.0.3
+info:
+  title: Sample API
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /signup:
+    post:
+      tags:
+      - Auth
+      summary: 新規登録
+      operationId: signupPOST
+      requestBody:
+        description: SignupRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/signup_body'
+        required: true
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "400":
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-swagger-router-controller: Auth
+  /login:
+    post:
+      tags:
+      - Auth
+      summary: ログイン
+      operationId: loginPOST
+      requestBody:
+        description: LoginRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login_body'
+        required: true
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-swagger-router-controller: Auth
+  /logout:
+    post:
+      tags:
+      - Auth
+      summary: ログアウト
+      operationId: logoutPOST
+      responses:
+        "200":
+          description: success
+        "400":
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-swagger-router-controller: Auth
+  /csrf:
+    post:
+      tags:
+      - Auth
+      summary: トークン発行
+      operationId: csrfPOST
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: string
+                example: fagafwafgaf
+                x-content-type: application/json
+        "400":
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-swagger-router-controller: Auth
+  /debugs:
+    get:
+      tags:
+      - Debug
+      summary: デバッグ全取得
+      operationId: debugsGET
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebugResponse'
+        "400":
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-swagger-router-controller: Debug
+  /debugs/:debugId:
+    get:
+      tags:
+      - Debug
+      summary: 指定のデバッグを取得
+      operationId: debugsdebugIdGET
+      requestBody:
+        description: デバッグのID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/debugs_debugId_body'
+        required: true
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebugResponse'
+        "400":
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-swagger-router-controller: Debug
+  /debugs(post):
+    post:
+      tags:
+      - Debug
+      summary: デバッグを新規作成
+      operationId: debugs_postPOST
+      requestBody:
+        description: DebugRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebugPostRequest'
+        required: true
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebugResponse'
+        "400":
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-swagger-router-controller: Debug
+  /debugs/:debugId(put):
+    put:
+      tags:
+      - Debug
+      summary: デバッグを更新
+      operationId: debugsdebugId_putPUT
+      requestBody:
+        description: デバッグIDとbody
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebugPutRequest'
+        required: true
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebugResponse'
+        "400":
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-swagger-router-controller: Debug
+  /debugs/:debugId(delete):
+    delete:
+      tags:
+      - Debug
+      summary: デバッグを削除
+      operationId: debugsdebugId_deleteDELETE
+      requestBody:
+        description: デバッグID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/debugs_debugIddelete_body'
+        required: true
+      responses:
+        "200":
+          description: success
+        "400":
+          description: failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-swagger-router-controller: Debug
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: missing csrf token in request header
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        email:
+          type: string
+          example: test@example.com
+        password:
+          type: string
+          example: test1234!
+        name:
+          type: string
+          example: 佐藤 仁
+        createdAt:
+          type: string
+          example: 2023/08/13
+        updateAt:
+          type: string
+          example: 2023/08/13
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        email:
+          type: string
+          example: test@example.com
+        name:
+          type: string
+          example: 佐藤 仁
+      example:
+        name: 佐藤 仁
+        id: "1"
+        email: test@example.com
+    DebugPostRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: エラータイトル
+        body:
+          type: string
+          example: エラー本文
+        links:
+          type: array
+          items:
+            type: string
+            example: "[\"リンク1\",\"リンク2\"]"
+        techs:
+          type: array
+          items:
+            type: string
+            example: "[\"技術1\",\"技術2\"]"
+        cause:
+          type: string
+          example: 原因
+        resolve:
+          type: string
+          example: 解決法
+    DebugPutRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        title:
+          type: string
+          example: エラータイトル
+        body:
+          type: string
+          example: エラー本文
+        links:
+          type: array
+          items:
+            type: string
+            example: "[\"リンク1\",\"リンク2\"]"
+        techs:
+          type: array
+          items:
+            type: string
+            example: "[\"技術1\",\"技術2\"]"
+        cause:
+          type: string
+          example: 原因
+        resolve:
+          type: string
+          example: 解決法
+    DebugResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1"
+        title:
+          type: string
+          example: エラータイトル
+        body:
+          type: string
+          example: エラー本文
+        links:
+          type: array
+          items:
+            type: string
+            example: "[\"http://localhost:3000\"]"
+        techs:
+          type: array
+          items:
+            type: string
+            example: "[\"javascript\"]"
+        cause:
+          type: string
+          example: 原因
+        resolve:
+          type: string
+          example: 解決法
+        createdAt:
+          type: string
+          example: 2023/08/13
+        updateAt:
+          type: string
+          example: 2023/08/13
+      example:
+        createdAt: 2023/08/13
+        resolve: 解決法
+        cause: 原因
+        updateAt: 2023/08/13
+        links:
+        - "[\"http://localhost:3000\"]"
+        - "[\"http://localhost:3000\"]"
+        id: "1"
+        title: エラータイトル
+        body: エラー本文
+        techs:
+        - "[\"javascript\"]"
+        - "[\"javascript\"]"
+    signup_body:
+      type: object
+      properties:
+        email:
+          example: test@example.com
+        password:
+          example: test1234
+        name:
+          example: 佐藤仁
+    login_body:
+      type: object
+      properties:
+        email:
+          example: test@example.com
+        password:
+          example: test1234
+    inline_response_200:
+      type: object
+      properties:
+        id:
+          example: 1
+        token:
+          example: fkashgjkashjkgfhasjkfhnajwkhfjkafewq
+      example:
+        id: 1
+        token: fkashgjkashjkgfhasjkfhnajwkhfjkafewq
+    debugs_debugId_body:
+      type: object
+      properties:
+        debugId:
+          example: 12
+    debugs_debugIddelete_body:
+      type: object
+      properties:
+        id:
+          example: 1
